@@ -3,6 +3,7 @@ package ar.edu.unlu.chatmvc.vista;
 import ar.edu.unlu.chatmvc.controlador.Controlador;
 import ar.edu.unlu.chatmvc.modelo.IMensaje;
 import ar.edu.unlu.chatmvc.modelo.IUsuario;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -56,24 +57,30 @@ public class VistaGrafica implements IVista {
 
     @Override
     public void mostrarListaUsuarios(List<IUsuario> usuarios) {
-        if (chatController != null) {
-            chatController.mostrarListaUsuarios(usuarios);
-        }
+        Platform.runLater(() -> {
+            if (chatController != null) {
+                chatController.mostrarListaUsuarios(usuarios);
+            }
+        });
     }
 
     @Override
     public void mostrarChat(List<IMensaje> mensajes) {
-        if (chatController != null) {
-            chatController.mostrarChat(mensajes);
-        }
+        Platform.runLater(() -> {
+            if (chatController != null) {
+                chatController.mostrarChat(mensajes);
+            }
+        });
     }
 
     @Override
     public void mostrarError(String mensaje) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle("Error");
-        alert.setHeaderText(null);
-        alert.setContentText(mensaje);
-        alert.showAndWait();
+        Platform.runLater(() -> {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText(null);
+            alert.setContentText(mensaje);
+            alert.showAndWait();
+        });
     }
 }
