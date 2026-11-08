@@ -14,7 +14,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.release>17</maven.compiler.release>
         <javafx.version>21.0.5</javafx.version>
-        <javafx.mainClass>ar.edu.unlu.chatmvc.Lanzador</javafx.mainClass>
+        <javafx.mainClass>ar.edu.unlu.chatmvc.cliente.LanzadorCliente</javafx.mainClass>
     </properties>
 
     <dependencies>
