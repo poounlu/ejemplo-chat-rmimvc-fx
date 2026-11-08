@@ -1,17 +1,19 @@
 package ar.edu.unlu.chatmvc.modelo;
 
-import ar.edu.unlu.chatmvc.observer.Observable;
+import ar.edu.unlu.rmimvc.observer.ObservableRemoto;
 
+import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-public class Chat extends Observable {
+public class Chat extends ObservableRemoto implements IChat {
     private final Map<Integer, Usuario> usuarios = new LinkedHashMap<>();
     private final List<Mensaje> mensajes = new ArrayList<>();
 
-    public IUsuario conectarUsuario(String nombre) {
+    @Override
+    public IUsuario conectarUsuario(String nombre) throws RemoteException {
         if (nombre == null || nombre.isBlank()) {
             throw new IllegalArgumentException("El nombre de usuario no puede estar vacío.");
         }
@@ -22,7 +24,8 @@ public class Chat extends Observable {
         return u;
     }
 
-    public void desconectarUsuario(int usuarioId) {
+    @Override
+    public void desconectarUsuario(int usuarioId) throws RemoteException {
         Usuario u = usuarios.remove(usuarioId);
         if (u != null) {
             enviarMensajeDelSistema(u.getNombre() + " salió del chat.");
@@ -30,7 +33,8 @@ public class Chat extends Observable {
         }
     }
 
-    public void enviarMensaje(String texto, IUsuario usuario) {
+    @Override
+    public void enviarMensaje(String texto, IUsuario usuario) throws RemoteException {
         if (texto == null || texto.isBlank()) {
             return;
         }
@@ -38,16 +42,19 @@ public class Chat extends Observable {
         notificarObservadores(Eventos.NUEVO_MENSAJE);
     }
 
-    public void enviarMensajeDelSistema(String texto) {
+    @Override
+    public void enviarMensajeDelSistema(String texto) throws RemoteException {
         mensajes.add(new Mensaje(texto, null, true));
         notificarObservadores(Eventos.NUEVO_MENSAJE);
     }
 
-    public List<IMensaje> getMensajes() {
+    @Override
+    public List<IMensaje> getMensajes() throws RemoteException {
         return new ArrayList<>(mensajes);
     }
 
-    public List<IUsuario> getUsuarios() {
+    @Override
+    public List<IUsuario> getUsuarios() throws RemoteException {
         return new ArrayList<>(usuarios.values());
     }
 }

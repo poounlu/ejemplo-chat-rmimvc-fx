@@ -1,6 +1,10 @@
 package ar.edu.unlu.chatmvc.modelo;
 
-public class Usuario implements IUsuario {
+import java.io.Serializable;
+
+public class Usuario implements IUsuario, Serializable {
+    private static final long serialVersionUID = 1L;
+
     private static int GENERADOR_ID = 0;
     private final int id;
     private final String nombre;

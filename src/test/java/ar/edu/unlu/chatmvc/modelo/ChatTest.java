@@ -1,10 +1,11 @@
 package ar.edu.unlu.chatmvc.modelo;
 
-import ar.edu.unlu.chatmvc.observer.IObservable;
-import ar.edu.unlu.chatmvc.observer.IObservador;
+import ar.edu.unlu.rmimvc.observer.IObservableRemoto;
+import ar.edu.unlu.rmimvc.observer.IObservadorRemoto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,7 +21,7 @@ class ChatTest {
     }
 
     @Test
-    void conectarUsuarioAgregaUsuarioYNotificaConectado() {
+    void conectarUsuarioAgregaUsuarioYNotificaConectado() throws RemoteException {
         IUsuario usuario = chat.conectarUsuario("Ana");
 
         assertNotNull(usuario);
@@ -35,7 +36,7 @@ class ChatTest {
     }
 
     @Test
-    void enviarMensajeRegistraAutorYTexto() {
+    void enviarMensajeRegistraAutorYTexto() throws RemoteException {
         IUsuario usuario = chat.conectarUsuario("Carlos");
         chat.enviarMensaje("¡Hola a todos!", usuario);
 
@@ -48,12 +49,12 @@ class ChatTest {
     }
 
     @Test
-    void notificaAObservadoresCuandoOcurreUnEvento() {
-        class ObservadorSpy implements IObservador {
+    void notificaAObservadoresCuandoOcurreUnEvento() throws RemoteException {
+        class ObservadorSpy implements IObservadorRemoto {
             final List<Object> eventosRecibidos = new ArrayList<>();
 
             @Override
-            public void actualizar(IObservable observable, Object evento) {
+            public void actualizar(IObservableRemoto observable, Object evento) throws RemoteException {
                 eventosRecibidos.add(evento);
             }
         }
