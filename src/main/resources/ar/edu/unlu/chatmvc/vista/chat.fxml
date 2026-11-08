@@ -12,10 +12,19 @@
 
 <BorderPane xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="ar.edu.unlu.chatmvc.vista.ChatController"
-            prefWidth="640.0" prefHeight="420.0">
+            prefWidth="640.0" prefHeight="450.0">
     <padding>
         <Insets top="10.0" right="10.0" bottom="10.0" left="10.0" />
     </padding>
+
+    <top>
+        <HBox alignment="CENTER_LEFT" spacing="10.0" style="-fx-background-color: #f0f0f0; -fx-padding: 8; -fx-background-radius: 4;">
+            <BorderPane.margin>
+                <Insets bottom="10.0" />
+            </BorderPane.margin>
+            <Label fx:id="lblEstadoSala" text="Iniciando sala..." style="-fx-font-weight: bold;" />
+        </HBox>
+    </top>
 
     <center>
         <TextArea fx:id="areaMensajes" editable="false" wrapText="true" />

@@ -11,4 +11,5 @@ public interface IVista {
     void mostrarListaUsuarios(List<IUsuario> usuarios);
     void mostrarChat(List<IMensaje> mensajes);
     void mostrarError(String mensaje);
+    void actualizarEstadoSala(boolean activa, String nombreAnfitrion);
 }

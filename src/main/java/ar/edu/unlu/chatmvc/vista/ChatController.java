@@ -5,6 +5,7 @@ import ar.edu.unlu.chatmvc.modelo.IMensaje;
 import ar.edu.unlu.chatmvc.modelo.IUsuario;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
@@ -15,6 +16,9 @@ import java.util.List;
 public class ChatController {
 
     private static final DateTimeFormatter FORMATO_HORA = DateTimeFormatter.ofPattern("HH:mm");
+
+    @FXML
+    private Label lblEstadoSala;
 
     @FXML
     private TextArea areaMensajes;
@@ -62,5 +66,15 @@ public class ChatController {
         }
         areaMensajes.setText(sb.toString());
         areaMensajes.positionCaret(areaMensajes.getText().length());
+    }
+
+    public void actualizarEstadoSala(boolean activa, String nombreAnfitrion) {
+        txtMensaje.setDisable(!activa);
+        btnEnviar.setDisable(!activa);
+        if (lblEstadoSala != null) {
+            lblEstadoSala.setText(activa
+                    ? "🟢 Sala activa (Anfitrión: " + nombreAnfitrion + ")"
+                    : "⏸ Sala en pausa — Esperando al anfitrión (" + nombreAnfitrion + ")");
+        }
     }
 }

@@ -32,6 +32,7 @@ public class Controlador implements IControladorRemoto {
             vista.mostrarSalaChat(usuario.getNombre());
             vista.mostrarListaUsuarios(modelo.getUsuarios());
             vista.mostrarChat(modelo.getMensajes());
+            vista.actualizarEstadoSala(modelo.isSalaActiva(), modelo.getNombreAnfitrion());
             return true;
         } catch (IllegalArgumentException e) {
             vista.mostrarError(e.getMessage());
@@ -46,10 +47,27 @@ public class Controlador implements IControladorRemoto {
         if (usuario != null && modelo != null) {
             try {
                 modelo.enviarMensaje(texto, usuario);
+            } catch (IllegalStateException e) {
+                vista.mostrarError(e.getMessage());
             } catch (RemoteException e) {
                 vista.mostrarError("Error al enviar mensaje: " + e.getMessage());
             }
         }
+    }
+
+    public void cerrarApp() {
+        if (modelo != null) {
+            try {
+                if (usuario != null) {
+                    modelo.cerrar(this, usuario.getId());
+                } else {
+                    modelo.removerObservador(this);
+                }
+            } catch (RemoteException e) {
+                // Si el servidor cerró o falló la red, ignoramos para poder terminar
+            }
+        }
+        System.exit(0);
     }
 
     public IUsuario getUsuario() {
@@ -63,6 +81,7 @@ public class Controlador implements IControladorRemoto {
                 case CAMBIO_LISTA_USUARIOS -> {
                     try {
                         vista.mostrarListaUsuarios(modelo.getUsuarios());
+                        vista.actualizarEstadoSala(modelo.isSalaActiva(), modelo.getNombreAnfitrion());
                     } catch (RemoteException e) {
                         vista.mostrarError("Error al actualizar usuarios: " + e.getMessage());
                     }

@@ -71,4 +71,29 @@ class ChatTest {
         assertEquals(totalEventos + 1, spy.eventosRecibidos.size());
         assertEquals(Eventos.NUEVO_MENSAJE, spy.eventosRecibidos.get(spy.eventosRecibidos.size() - 1));
     }
+
+    @Test
+    void desconexionDelAnfitrionPoneSalaEnPausaYReconexionLaReactiva() throws RemoteException {
+        IUsuario ana = chat.conectarUsuario("Ana");
+        assertEquals("Ana", chat.getNombreAnfitrion());
+        assertTrue(chat.isSalaActiva());
+
+        IUsuario beto = chat.conectarUsuario("Beto");
+        assertTrue(chat.isSalaActiva());
+
+        // Ana (anfitriona) se desconecta
+        chat.desconectarUsuario(ana.getId());
+        assertFalse(chat.isSalaActiva());
+
+        // Beto intenta enviar un mensaje mientras la sala está en pausa
+        assertThrows(IllegalStateException.class, () -> chat.enviarMensaje("¿Hay alguien ahí?", beto));
+
+        // Ana retoma la sesión con su nombre de anfitriona
+        IUsuario anaRetorno = chat.conectarUsuario("Ana");
+        assertTrue(chat.isSalaActiva());
+
+        // Ahora el envío de mensajes funciona nuevamente
+        assertDoesNotThrow(() -> chat.enviarMensaje("¡Volví!", anaRetorno));
+        assertDoesNotThrow(() -> chat.enviarMensaje("¡Qué bueno!", beto));
+    }
 }

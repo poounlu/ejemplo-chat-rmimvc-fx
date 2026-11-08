@@ -33,6 +33,7 @@ public class VistaGrafica implements IVista {
 
             stage.setTitle("Chat POO — Iniciar Sesión");
             stage.setScene(new Scene(root));
+            stage.setOnCloseRequest(e -> controlador.cerrarApp());
             stage.show();
         } catch (IOException e) {
             mostrarError("No se pudo cargar la vista de login: " + e.getMessage());
@@ -49,6 +50,7 @@ public class VistaGrafica implements IVista {
 
             stage.setTitle("Chat POO — " + nombreUsuario);
             stage.setScene(new Scene(root));
+            stage.setOnCloseRequest(e -> controlador.cerrarApp());
             stage.show();
         } catch (IOException e) {
             mostrarError("No se pudo cargar la vista de chat: " + e.getMessage());
@@ -81,6 +83,15 @@ public class VistaGrafica implements IVista {
             alert.setHeaderText(null);
             alert.setContentText(mensaje);
             alert.showAndWait();
+        });
+    }
+
+    @Override
+    public void actualizarEstadoSala(boolean activa, String nombreAnfitrion) {
+        Platform.runLater(() -> {
+            if (chatController != null) {
+                chatController.actualizarEstadoSala(activa, nombreAnfitrion);
+            }
         });
     }
 }
