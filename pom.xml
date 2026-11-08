@@ -29,6 +29,13 @@
             <version>${javafx.version}</version>
         </dependency>
         <dependency>
+            <groupId>ar.edu.unlu</groupId>
+            <artifactId>rmimvc</artifactId>
+            <version>1.0</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/LibreriaRMIMVC.jar</systemPath>
+        </dependency>
+        <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
             <version>5.11.3</version>
