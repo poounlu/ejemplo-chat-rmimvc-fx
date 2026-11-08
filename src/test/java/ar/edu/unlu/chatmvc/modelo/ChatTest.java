@@ -4,7 +4,9 @@ import ar.edu.unlu.rmimvc.observer.IObservableRemoto;
 import ar.edu.unlu.rmimvc.observer.IObservadorRemoto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
+import java.nio.file.Path;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
@@ -95,5 +97,31 @@ class ChatTest {
         // Ahora el envío de mensajes funciona nuevamente
         assertDoesNotThrow(() -> chat.enviarMensaje("¡Volví!", anaRetorno));
         assertDoesNotThrow(() -> chat.enviarMensaje("¡Qué bueno!", beto));
+    }
+
+    @Test
+    void persistirSesionGuardaYRecuperaHistorialYAnfitrion(@TempDir Path tempDir) throws RemoteException {
+        Path archivo = tempDir.resolve("test_sesion.dat");
+        Chat chatOriginal = new Chat(archivo.toString());
+
+        IUsuario ana = chatOriginal.conectarUsuario("Ana");
+        IUsuario beto = chatOriginal.conectarUsuario("Beto");
+        chatOriginal.enviarMensaje("Mensaje persistente 1", ana);
+        chatOriginal.enviarMensaje("Mensaje persistente 2", beto);
+
+        // Guardar sesión
+        chatOriginal.guardarSesion(ana);
+
+        assertTrue(PersistenciaChat.existeArchivo(archivo.toString()));
+
+        // Comprobar que en el chat original se notificó el guardado
+        assertTrue(chatOriginal.getMensajes().stream().anyMatch(m -> m.getTexto().contains("guardó la sesión del chat")));
+
+        // Crear una nueva instancia de Chat apuntando al mismo archivo
+        Chat chatRecuperado = new Chat(archivo.toString());
+        assertEquals("Ana", chatRecuperado.getNombreAnfitrion());
+        List<IMensaje> mensajesRecuperados = chatRecuperado.getMensajes();
+        assertTrue(mensajesRecuperados.stream().anyMatch(m -> "Mensaje persistente 1".equals(m.getTexto())));
+        assertTrue(mensajesRecuperados.stream().anyMatch(m -> "Mensaje persistente 2".equals(m.getTexto())));
     }
 }

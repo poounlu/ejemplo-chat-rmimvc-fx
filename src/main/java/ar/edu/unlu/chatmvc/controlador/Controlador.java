@@ -55,6 +55,16 @@ public class Controlador implements IControladorRemoto {
         }
     }
 
+    public void guardarSesion() {
+        if (usuario != null && modelo != null) {
+            try {
+                modelo.guardarSesion(usuario);
+            } catch (RemoteException e) {
+                vista.mostrarError("Error al guardar la sesión: " + e.getMessage());
+            }
+        }
+    }
+
     public void cerrarApp() {
         if (modelo != null) {
             try {

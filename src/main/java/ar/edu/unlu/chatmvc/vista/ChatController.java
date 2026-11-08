@@ -21,6 +21,9 @@ public class ChatController {
     private Label lblEstadoSala;
 
     @FXML
+    private Button btnGuardar;
+
+    @FXML
     private TextArea areaMensajes;
 
     @FXML
@@ -46,6 +49,13 @@ public class ChatController {
                 controlador.enviarMensaje(texto);
                 txtMensaje.clear();
             }
+        }
+    }
+
+    @FXML
+    private void onGuardar() {
+        if (controlador != null) {
+            controlador.guardarSesion();
         }
     }
 

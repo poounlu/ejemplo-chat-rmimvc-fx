@@ -3,6 +3,7 @@ package ar.edu.unlu.chatmvc.modelo;
 import ar.edu.unlu.rmimvc.observer.IObservadorRemoto;
 import ar.edu.unlu.rmimvc.observer.ObservableRemoto;
 
+import java.io.IOException;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -12,7 +13,25 @@ import java.util.Map;
 public class Chat extends ObservableRemoto implements IChat {
     private final Map<Integer, Usuario> usuarios = new LinkedHashMap<>();
     private final List<Mensaje> mensajes = new ArrayList<>();
+    private final String archivoPersistencia;
     private String nombreAnfitrion;
+
+    public Chat() {
+        this(PersistenciaChat.ARCHIVO_POR_DEFECTO);
+    }
+
+    public Chat(String archivoPersistencia) {
+        this.archivoPersistencia = archivoPersistencia;
+        if (PersistenciaChat.existeArchivo(archivoPersistencia)) {
+            try {
+                SesionChat sesion = PersistenciaChat.recuperar(archivoPersistencia);
+                this.nombreAnfitrion = sesion.getNombreAnfitrion();
+                this.mensajes.addAll(sesion.getMensajes());
+            } catch (IOException | ClassNotFoundException e) {
+                System.err.println("No se pudo restaurar la sesión previa: " + e.getMessage());
+            }
+        }
+    }
 
     @Override
     public IUsuario conectarUsuario(String nombre) throws RemoteException {
@@ -91,5 +110,18 @@ public class Chat extends ObservableRemoto implements IChat {
     @Override
     public String getNombreAnfitrion() throws RemoteException {
         return nombreAnfitrion;
+    }
+
+    @Override
+    public void guardarSesion(IUsuario solicitante) throws RemoteException {
+        if (solicitante == null) {
+            throw new IllegalArgumentException("El usuario solicitante no puede ser nulo.");
+        }
+        try {
+            PersistenciaChat.guardar(new SesionChat(nombreAnfitrion, mensajes), archivoPersistencia);
+        } catch (IOException e) {
+            throw new RemoteException("Error al persistir la sesión de chat: " + e.getMessage(), e);
+        }
+        enviarMensajeDelSistema("💾 " + solicitante.getNombre() + " guardó la sesión del chat.");
     }
 }

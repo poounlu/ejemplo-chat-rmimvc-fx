@@ -16,4 +16,5 @@ public interface IChat extends IObservableRemoto {
     void cerrar(IObservadorRemoto controlador, int usuarioId) throws RemoteException;
     boolean isSalaActiva() throws RemoteException;
     String getNombreAnfitrion() throws RemoteException;
+    void guardarSesion(IUsuario solicitante) throws RemoteException;
 }

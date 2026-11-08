@@ -22,7 +22,8 @@
             <BorderPane.margin>
                 <Insets bottom="10.0" />
             </BorderPane.margin>
-            <Label fx:id="lblEstadoSala" text="Iniciando sala..." style="-fx-font-weight: bold;" />
+            <Label fx:id="lblEstadoSala" text="Iniciando sala..." style="-fx-font-weight: bold;" HBox.hgrow="ALWAYS" maxWidth="Infinity" />
+            <Button fx:id="btnGuardar" text="💾 Guardar chat" onAction="#onGuardar" />
         </HBox>
     </top>
 
